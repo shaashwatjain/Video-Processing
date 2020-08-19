@@ -17,3 +17,7 @@ except OSError:
 
 clip = mp.VideoFileClip("video.mp4")
 clip.audio.write_audiofile(path + "\\audio.mp3")
+
+synonyms = open(path + "\\files" + "\\synonyms.txt","w")
+synonyms.write("course\nsubject\ntheorem")
+synonyms.close()
