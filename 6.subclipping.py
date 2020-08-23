@@ -6,6 +6,8 @@ import os
 import json
 path = os.getcwd() + '\\files'
 
+#################################################### Loading files from external files
+
 plural_topics_file = open(path + "\\finalTopics_plu.txt","r")
 list_of_morewords = []
 list_of_morewords = json.load(plural_topics_file)
@@ -15,6 +17,17 @@ singular_topics_file = open(path + "\\finalTopics_sing.txt","r")
 list_of_singwords = []
 list_of_singwords = json.load(singular_topics_file)
 singular_topics_file.close()
+
+most_occurring = open(path + "\\most_occurring.txt","r")
+most_occurring_topic = json.load(most_occurring)
+most_occurring.close()
+
+transcript_change = open(path + "\\singular_transcript.txt","r")
+L = []
+L = json.load(transcript_change)
+transcript_change.close()
+
+################################################# Files you'll need loaded 
 
 list_of_newwords=[]
 for i in list_of_singwords:
@@ -48,6 +61,7 @@ for i in range(len(topics)-1):
             duplicate.append(topics[i+1])
             true.append(topics[i])
 
+#removing plural words from topics
 count = 0
 for i in pos:
     topics.pop(i-count)
@@ -59,24 +73,7 @@ for j in duplicate:
         if j in i:
             list_of_plurwords.remove(i)
 
-
-file = open(path + "\\transcript.txt","r")
-line = file.readline()
-lines_text = []
-while line:
-    lines_text.append(line.strip())
-    line = file.readline()
-file.close()
-
-limit = {}
-for word in list_of_plurwords:
-    arr=[]    
-    for line in lines_text:    
-        if word in line:
-            arr.append(line.split()[0])
-    limit[word]=arr
-#print(limit)    
-
+  
 file = open(path + "\\transcript.txt","r")
 line = file.readline()
 
@@ -95,6 +92,21 @@ while line:
 file.close()
 
 
+lines_text = []
+for i in L:
+    joined = " ".join(i)
+    lines_text.append(joined)
+
+limit = {}
+for word in list_of_plurwords:
+    arr=[]    
+    for line in lines_text:    
+        if word in line:
+            arr.append(line.split()[0])
+    limit[word]=arr
+#print(limit)  
+
+#don't go below this
 n =len(L)
 final = {}
 for j in topics:

@@ -37,32 +37,34 @@ count = 0
 i = 0
 r = sr.Recognizer()
 
-file_t = open(path + "\\transcript_temp.txt","w")
+file_t = open(path + "\\transcript_try.txt","w")
 
 import os
 my_path = os.getcwd() + '\\chunks'
 times = []
 
-while(i < length - 1):
-    filename = my_path + '\\chunk{0}.wav'.format(i)
-    str_time = dur(timings[i]/1000)
-    inner_start = time.time()
-    with sr.AudioFile(filename) as source:
-        r.adjust_for_ambient_noise(source)
-        audio_data = r.record(source)
+with sr.AudioFile(path + '\\audio.wav') as source:
+    r.adjust_for_ambient_noise(source)
+    while(i < length - 1):
+        #filename = my_path + '\\chunk{0}.wav'.format(i)
+        str_time = dur(timings[i]/1000)
+        inner_start = time.time()
+
+        audio_data = r.record(source,offset = -0.5, duration = ((timings[i+1] - timings[i])/1000))
         try:
-            text = r.recognize_google(audio_data,language="en-US")
+            text = r.recognize_google(audio_data, language="en-us")
             temp = ""
             for letter in text:
                 temp += letter.lower()
             file_t.write(str_time +" "+ temp + "\n")
         except:
             file_t.write(str_time +" " +"" + "\n")
-    #print("--- %s seconds ---"% (time.time() - inner_start))
-    times.append((time.time() - inner_start))
-    if(i < length):
-        bar.update(i)
-    i += 1
+
+        print("--- %s seconds ---"% (time.time() - inner_start))
+        times.append((time.time() - inner_start))
+        if(i < length):
+            bar.update(i)
+        i += 1
 
 file_t.close()
 print("Complete.")

@@ -5,13 +5,14 @@ from pydub.silence import split_on_silence, detect_silence
 import speech_recognition as sr
 from nltk.corpus import wordnet as wn
 import time
-import os
 import send2trash
+import os
+path = os.getcwd() + '\\files'
 
 start = time.time()
 
 # Load your audio.
-song = AudioSegment.from_mp3("audio.mp3")
+song = AudioSegment.from_wav(path + "\\audio.wav")
 
 dBFS = song.dBFS
 print(dBFS)
@@ -74,8 +75,7 @@ counted_duration.append(count*1000)
 #print(counted_duration)
 
 import json
-import os
-path = os.getcwd() + '\\files'
+
 file_screen = open(path + "\\timings.txt", "w")
 json.dump(counted_duration, file_screen)
 file_screen.close()

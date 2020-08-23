@@ -25,12 +25,6 @@ singular_words = dict()
 singular_words = json.load(singular_words_file)
 singular_words_file.close()
 
-singular_words_file_full = open(path + "\\single_full.txt","r")
-singular_words_full = dict()
-singular_words_full = json.load(singular_words_file_full)
-singular_words_file_full.close()
-#print(singular_words)
-
 plural_words_ocr = dict()
 singular_words_ocr = dict()
 try:    
@@ -72,10 +66,89 @@ for topic,value in singular_words.items():
 
 print(singular_topics)
 
+import numpy as np
+from sklearn.neighbors import KernelDensity
+import matplotlib.pyplot as plt
+
+plu_topic_val = list(plural_topics.values())
+
+a = np.array(plu_topic_val).reshape(-1, 1)
+#print(a)
+kde = KernelDensity(kernel='gaussian', bandwidth=1).fit(a)
+s = np.linspace(0,max(plu_topic_val))
+e = kde.score_samples(s.reshape(-1,1))
+plt.plot(s, e)
+#plt.show()
+
+from scipy.signal import argrelextrema
+mi, ma = argrelextrema(e, np.less)[0], argrelextrema(e, np.greater)[0]
+print ("Minima:", s[mi])
+print ("Maxima:", s[ma])
+
+plural_topics_export = dict()
+singular_topics_export = dict()
+
+threshold = None
+
+if len(s[mi]) and len(s[ma]):
+    threshold = (s[mi][0]+s[ma][0])/2
+elif len(s[mi]):
+    threshold = s[mi][0]
+elif len(s[ma]):
+    threshold = s[ma][0]
+else:
+    threshold = 1
+
+maxi = 0
+most_occurring = None
+for topic in plural_topics:
+    if plural_topics[topic] > threshold:
+        print(plural_topics[topic], topic)
+        plural_topics_export[topic] = plural_topics[topic]
+        if plural_topics[topic] > maxi:
+            maxi = plural_topics[topic]
+            most_occurring = topic
+
+
+sing_topic_val = list(singular_topics.values())
+
+a = np.array(sing_topic_val).reshape(-1, 1)
+#print(a)
+kde = KernelDensity(kernel='gaussian', bandwidth=1).fit(a)
+s = np.linspace(0,max(sing_topic_val))
+e = kde.score_samples(s.reshape(-1,1))
+plt.plot(s, e)
+#plt.show()
+
+from scipy.signal import argrelextrema
+mi, ma = argrelextrema(e, np.less)[0], argrelextrema(e, np.greater)[0]
+print ("Minima:", s[mi])
+print ("Maxima:", s[ma])
+
+
+if len(s[mi]) and len(s[ma]):
+    threshold = (s[mi][-2]+s[ma][-2])/2
+elif len(s[mi]):
+    threshold = s[mi][-1]
+elif len(s[ma]):
+    threshold = s[ma][-1]
+else:
+    threshold = 1
+
+
+for topic in singular_topics:
+    if singular_topics[topic] > threshold:
+        print(singular_topics[topic], topic)
+
+
+
 import json
 file_screen = open(path + "\\finalTopics_plu.txt", "w")
-json.dump(list_plu_topics, file_screen)
+json.dump(list(plural_topics_export.keys()), file_screen)
 file_screen.close()
 file_screen = open(path + "\\finalTopics_sing.txt", "w")
-json.dump(list(singular_topics.keys()), file_screen)
+json.dump(list(singular_topics_export.keys()), file_screen)
+file_screen.close()
+file_screen = open(path + "\\most_occuring.txt", "w")
+json.dump(most_occurring, file_screen)
 file_screen.close()
