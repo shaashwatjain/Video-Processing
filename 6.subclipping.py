@@ -29,29 +29,26 @@ transcript_change.close()
 
 ################################################# Files you'll need loaded 
 
-lines_text = []
-for i in L:
-    joined = " ".join(i)
-    lines_text.append(joined)
-
-L = lines_text.copy()
-
 topics=set()
-
 for i in list_of_plurwords:
     for j in i.split():
         topics.add(j)
 topics = list(topics)
 topics.sort()
 
+lines_text = []
+for i in L:
+    joined = " ".join(i)
+    lines_text.append(joined)
+
+
 limit = {}
 for word in list_of_plurwords:
     arr=[]    
-    for line in lines_text:    
+    for line in lines_text:
         if word in line:
             arr.append(line.split()[0])
     limit[word]=arr
-#print(limit)  
 
 #don't go below this
 n =len(L)
