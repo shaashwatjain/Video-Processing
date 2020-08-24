@@ -139,6 +139,7 @@ else:
 for topic in singular_topics:
     if singular_topics[topic] > threshold:
         print(singular_topics[topic], topic)
+        singular_topics_export[topic] = singular_topics[topic]
 
 
 

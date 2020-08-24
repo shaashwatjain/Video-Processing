@@ -9,16 +9,16 @@ path = os.getcwd() + '\\files'
 #################################################### Loading files from external files
 
 plural_topics_file = open(path + "\\finalTopics_plu.txt","r")
-list_of_morewords = []
-list_of_morewords = json.load(plural_topics_file)
+list_of_plurwords = []
+list_of_plurwords = json.load(plural_topics_file)
 plural_topics_file.close()
 
 singular_topics_file = open(path + "\\finalTopics_sing.txt","r")
-list_of_singwords = []
-list_of_singwords = json.load(singular_topics_file)
+list_of_newwords = []
+list_of_newwords = json.load(singular_topics_file)
 singular_topics_file.close()
 
-most_occurring = open(path + "\\most_occurring.txt","r")
+most_occurring = open(path + "\\most_occuring.txt","r")
 most_occurring_topic = json.load(most_occurring)
 most_occurring.close()
 
@@ -29,73 +29,20 @@ transcript_change.close()
 
 ################################################# Files you'll need loaded 
 
-list_of_newwords=[]
-for i in list_of_singwords:
-    j = i.strip()
-    list_of_newwords.append(j)
-   
-list_of_plurwords=[]
-for i in list_of_morewords:
-    j = i.strip()
-    list_of_plurwords.append(j)
-    
-    
-topics=set()
-
-for i in list_of_plurwords:
-    for j in i.split():
-        if j in list_of_newwords:
-            list_of_newwords.remove(j)
-        topics.add(j)
-topics = list(topics)
-topics.sort()
-
-pos = []
-duplicate=[]
-true = []
-suffix = ['s','ing','ed']
-for i in range(len(topics)-1):
-    for j in suffix:
-        if topics[i]+j==topics[i+1]:
-            pos.append(i+1)
-            duplicate.append(topics[i+1])
-            true.append(topics[i])
-
-#removing plural words from topics
-count = 0
-for i in pos:
-    topics.pop(i-count)
-    count+=1
-
-list_of_plurwords.sort()
-for j in duplicate:
-    for i in list_of_plurwords:
-        if j in i:
-            list_of_plurwords.remove(i)
-
-  
-file = open(path + "\\transcript.txt","r")
-line = file.readline()
-
-L=[]
-while line:
-    M=[]
-    #print(line)
-    for word in line.split():
-        if word in duplicate:
-            for k in range(len(duplicate)):
-                if duplicate[k]==word:
-                    word=true[k]
-        M.append(word.lower())
-    L.append(M)
-    line = file.readline()
-file.close()
-
-
 lines_text = []
 for i in L:
     joined = " ".join(i)
     lines_text.append(joined)
+
+L = lines_text.copy()
+
+topics=set()
+
+for i in list_of_plurwords:
+    for j in i.split():
+        topics.add(j)
+topics = list(topics)
+topics.sort()
 
 limit = {}
 for word in list_of_plurwords:
