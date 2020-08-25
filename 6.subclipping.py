@@ -23,69 +23,62 @@ most_occurring_topic = json.load(most_occurring)
 most_occurring.close()
 
 transcript_change = open(path + "\\singular_transcript.txt","r")
-L = []
-L = json.load(transcript_change)
+script = []
+script = json.load(transcript_change)
 transcript_change.close()
 
-################################################# Files you'll need loaded 
+###############################################################################
 
-topics=set()
+#splitting the plural topics into individual words
+topics = set()
 for i in list_of_plurwords:
     for j in i.split():
         topics.add(j)
 topics = list(topics)
-topics.sort()
+#print(topics)
 
-lines_text = []
-for i in L:
-    joined = " ".join(i)
-    lines_text.append(joined)
+# joing the transcript to search for the plural words
+joined_script = []
+for line in script:
+    M = " ".join(line)
+    joined_script.append(M)
+#print(joined_script)
 
-
-limit = {}
-for word in list_of_plurwords:
-    arr=[]    
-    for line in lines_text:
-        if word in line:
-            arr.append(line.split()[0])
-    limit[word]=arr
-
-#don't go below this
-n =len(L)
-final = {}
-for j in topics:
-    ans = []
-    for i in range(n):
-        if j in L[i]:
-            #ans.append(i+1)
-            ans.append(L[i][0])
-    final[j]=ans
-    
-res = {}
-for k in list_of_newwords:
-    new = []
-    for t in range(n):
-        if k in L[t]:
-            new.append(L[t][0])
-    res[k] = new
-    
-result = {}
+#claculating the first occurence of the plural topics
+first_occr = {}
 for i in list_of_plurwords:
-    result[i]=set()
+    for line in joined_script:
+        if i in line:
+            first_occr[i]=[line.split()[0]]
+            break
+#print(first_occr.items())
 
+################################################
 
-for i in list_of_plurwords:
-    for j in i.split():
-        result[i] = set(result[i]) | set(final[j])
-        
-    result[i] = list(result[i])
-    result[i].sort()
+def single_topics_finding(L):
+    temp_dict={}
+    for i in L:
+        li = []
+        for j in script:
+            if i in j:
+                li.append(j[0])
+        temp_dict[i]=li
+    return temp_dict
 
-"""
-printing the result
-for i,j in result.items():
-    print(i,j)
-"""    
+single_topics=single_topics_finding(list_of_newwords)
+
+partial_result=single_topics_finding(topics)
+#print(partial_result.items())
+
+plural_topics={}
+for topic in list_of_plurwords:
+    li = set()
+    for i in topic.split():
+        li.update(partial_result[i])
+    li = sorted(li)
+    plural_topics[topic]=li
+#print(plural_topics.items())
+
 
 def time_calc(result):
     time = list(result.items())
@@ -102,6 +95,20 @@ def time_calc(result):
         time_diff[k]=diff
     return time_diff
 
+#converting the string time to sec
+sec_plural_topics = time_calc(plural_topics)
+sec_first_occr = time_calc(first_occr)
+sec_single_topics = time_calc(single_topics)
+sec_topics_finding = time_calc(single_topics)
+
+#starting the plural topics from the 
+for i,j in sec_plural_topics.items():
+    mark = sec_first_occr[i][0]
+    iter = 0
+    while j[iter]<mark:
+        j.pop(0)
+#print(sec_plural_topics)
+
 def diff_calc(result):
     diff={}
     for i,j in result.items():  
@@ -111,42 +118,14 @@ def diff_calc(result):
         diff[i]=li
     return diff
 
-
-plural = time_calc(result)
-single = time_calc(res)
-together = time_calc(limit)
-
-#starting the topic from where the two words together comes
-for i in plural.keys():
-    val = together[i][0]
-    li = plural[i]
-    for j in range(len(li)):
-        if li[j]==val:
-            plural[i] = li[j:]
-
-to_be_deleted=[]
-for i in plural.keys():
-    if len(plural[i])==1:
-        to_be_deleted.append(i)
-
-pl = {}
-
-for i in plural.keys():
-    if i not in to_be_deleted:
-        pl[i]=plural[i]
-
-plural=pl
-    
-
-diff1=diff_calc(plural)
-diff2=diff_calc(single)
+#converting diff between time
+diff_plural_topics=diff_calc(sec_plural_topics)
+diff_single_topics=diff_calc(sec_single_topics)
 
 
-
-def plot_box(result):
+def time_division(result):
     labels=[]
     box_plot_data=[]
-    answer = {}
     LEN = {}
     for i,j in result.items():
         s = np.array(j)
@@ -158,9 +137,6 @@ def plot_box(result):
         lower_quartile = np.percentile(s, 25)
         iqr = upper_quartile - lower_quartile
         upper_whisker = s[s<=upper_quartile+1.5*iqr].max()
-        #lower_whisker = j[j>=lower_quartile-1.5*iqr].min()
-        #answer[i]=[lower_quartile,upper_quartile]
-        #answer[i]=[lower_whisker,upper_quartile]
         count = 0
         for k in j:
             if k<=upper_whisker:
@@ -169,93 +145,84 @@ def plot_box(result):
                 LEN[i].append(count)
                 count=1
         LEN[i].append(count)
-                
-    
-    plt.boxplot(box_plot_data,vert = 0,labels=labels)
-    #plt.show()
-    #print(answer.items())
+    #plt.boxplot(box_plot_data,vert = 0,labels=labels)
     return LEN
 
-#plot_box(plural)
-#plot_box(single)
-plural.items()
-diff1.items()
-LEN = plot_box(diff1)    
-#print(LEN)
+LEN_plural = time_division(diff_plural_topics)
+LEN_single = time_division(diff_single_topics)
 
-new_len = {}
-for i,j in LEN.items():
-    L=list(accumulate(j))
-    new_len[i]=L
+def calc_interval(LEN,result):
+    new_len = {}
+    for i,j in LEN.items():
+        L=list(accumulate(j))
+        new_len[i]=L
 
-#print(new_len.items())
+    answer={}
+    for i,j in new_len.items():
+        L=[]
+        for k in range(1,len(j)):
+            if j[k]-1 in j:
+                continue
+            if k==1:
+                lb = result[i][j[k-1]]
+            else:
+                lb = result[i][j[k-1]+1]
+            hb = result[i][j[k]]
+            L.append([lb,hb])
+        if L!=[]:
+            answer[i]=L
+    return answer
 
-"""
-answer={}
-for i,j in new_len.items():
-    L=[]
-    val = plural[i][0]
-    for k in range(1,len(j)):
-        lb = val
-        val = sum(diff1[i][j[k-1]:j[k]])
-        L.append([lb,val+lb])
-        if j[k]!=j[-1]:
-            val=plural[i][j[k]+1]
-    answer[i]=L
-"""
-answer={}
-for i,j in new_len.items():
-    L=[]
-    for k in range(1,len(j)):
-        if j[k]-1 in j:
-            continue
-        if k==1:
-            lb = plural[i][j[k-1]]
-        else:
-            lb = plural[i][j[k-1]+1]
-        hb = plural[i][j[k]]
-        L.append([lb,hb])
-    if L!=[]:
-        answer[i]=L
+final_plural_topics = calc_interval(LEN_plural,sec_plural_topics)
+final_single_topics = calc_interval(LEN_single,sec_single_topics)
+print(final_plural_topics.items())
+print(final_single_topics.items())
 
-most_occurring_topic = ""
+most_occurring_topic2 = ""
 max_duration = 0
-for topic in answer.keys():
+for topic in final_plural_topics.keys():
     sum = 0
-    for arr in answer[topic]:
+    for arr in final_plural_topics[topic]:
         start_duration = arr[0]
         end_duration = arr[1]
         duration = end_duration - start_duration
         sum += duration
     if(sum > max_duration):
         max_duration = sum
-        most_occurring_topic = topic
+        most_occurring_topic2 = topic
 
+abort = 0
+if(not most_occurring_topic == most_occurring_topic2):
+    print("Please choose your main topic(1/2):\n1. "+most_occurring_topic+"\n2. "+most_occurring_topic2+"\n")
+    num = int(input("Enter here:"))
+    if num == 1:
+        most_occurring_topic = most_occurring_topic
+        abort = 0
+    elif num == 2:
+        most_occurring_topic = most_occurring_topic2
+        abort = 0
+    else:
+        print("Invalid option... Aborting")
+        abort = 1
 
-print(answer.items())
-#print(plural.items())
-print(most_occurring_topic)
+if not abort:
+    from moviepy.editor import *
 
-# from moviepy.editor import *
-# import os
-
-# try:
-#     if not os.path.exists(most_occurring_topic):
-#         os.makedirs(most_occurring_topic)
-#         print("Created Directory")
-# except:
-#     print("Error creating directory")
-
-# for topic in answer.keys():
-#     i = 1
-#     for arr in answer[topic]:
-#         start_duration = arr[0]
-#         end_duration = arr[1]
-#         if most_occurring_topic in topic:
-#             continue
-#         if(end_duration - start_duration > 10):
-#             video = VideoFileClip("video.mp4").subclip(start_duration, end_duration)
-#             video.write_videofile(most_occurring_topic + "/" + topic + str(i) +  ".mp4")
-#         i += 1
+    try:
+        if not os.path.exists(most_occurring_topic):
+            os.makedirs(most_occurring_topic)
+            print("Created Directory")
+    except:
+        print("Error creating directory")
         
-
+    for topic in final_plural_topics.keys():
+        i = 1
+        for arr in final_plural_topics[topic]:
+            start_duration = arr[0]
+            end_duration = arr[1]
+            if most_occurring_topic in topic:
+                continue
+            if(end_duration - start_duration > 10):
+                video = VideoFileClip("video.mp4").subclip(start_duration, end_duration)
+                video.write_videofile(most_occurring_topic + "/" + topic + str(i) +  ".mp4")
+            i += 1

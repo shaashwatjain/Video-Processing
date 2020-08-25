@@ -37,7 +37,7 @@ count = 0
 i = 0
 r = sr.Recognizer()
 
-file_t = open(path + "\\transcript_temp.txt","w")
+file_t = open(path + "\\transcript.txt","w")
 
 import os
 my_path = os.getcwd() + '\\chunks'

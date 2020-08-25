@@ -109,6 +109,12 @@ for topic in plural_topics:
             maxi = plural_topics[topic]
             most_occurring = topic
 
+sorted_a = list(plural_topics_export.keys())
+sorted_a.sort()
+
+for i,check in enumerate(sorted_a):
+    if sorted_a[i - 1] in check:
+        del plural_topics_export[sorted_a[i-1]]
 
 sing_topic_val = list(singular_topics.values())
 

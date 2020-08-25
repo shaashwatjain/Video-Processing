@@ -1,5 +1,6 @@
 import spacy
 import os
+import json
 
 path = os.getcwd() + '\\files'
 
@@ -90,7 +91,7 @@ topics.sort()
 pos = []
 duplicate=[]
 true = []
-suffix = ['s','ing','ed']
+suffix = ['s','ed']
 for i in range(len(topics)-1):
     for j in suffix:
         if topics[i]+j==topics[i+1]:
@@ -139,6 +140,10 @@ while line:
     line = file.readline()
 file.close()
 
+file_screen = open(path + "\\singular_transcript.txt", "w")
+json.dump(L, file_screen)
+file_screen.close()
+
 ############################################ Changes for 6.subclipping
 
 from difflib import SequenceMatcher
@@ -148,7 +153,7 @@ def similarity(a,b):
     return float(rat)
 
 to_delete = []
-suffix = ['s','ing','ed']
+suffix = ['s','ed']
 for suf in suffix:
     for topic in counted_plu:
         if topic+suf in counted_plu:
@@ -224,7 +229,7 @@ e = kde.score_samples(s.reshape(-1,1))
 plt.plot(s, e)
 #plt.show()
 
-print("\n\n\nTop Plural Topics :\n")
+print("\nTop Plural Topics :\n")
 from scipy.signal import argrelextrema
 mi, ma = argrelextrema(e, np.less)[0], argrelextrema(e, np.greater)[0]
 print ("Minima:", s[mi])
@@ -259,7 +264,7 @@ plt.plot(s, e)
 #plt.show()
 
 
-print("\n\n\nTop Single Topics :\n")
+print("\nTop Single Topics :\n")
 from scipy.signal import argrelextrema
 mi, ma = argrelextrema(e, np.less)[0], argrelextrema(e, np.greater)[0]
 print ("Minima:", s[mi])
@@ -280,13 +285,11 @@ for topic in counted_sing:
         counted_sing_export[topic] = counted_sing[topic]
 
 
-import json
+
 file_screen = open(path + "\\multiple.txt", "w")
 json.dump(counted_plu_export, file_screen)
 file_screen.close()
 file_screen = open(path + "\\single.txt", "w")
 json.dump(counted_sing_export, file_screen)
 file_screen.close()
-file_screen = open(path + "\\singular_transcript.txt", "w")
-json.dump(L, file_screen)
-file_screen.close()
+
