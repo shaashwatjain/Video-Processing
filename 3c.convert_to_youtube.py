@@ -16,7 +16,7 @@ final = []
 for i in range(0,count,2):
     final.append(L[i]+' '+M[i+1])
 
-f = open(path + '\\transcript_change_yt.txt', 'w')
+f = open(path + '\\transcript.txt', 'w')
 for i in final:
     f.write(i)
     f.write('\n')

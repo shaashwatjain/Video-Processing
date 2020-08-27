@@ -16,58 +16,79 @@ widgets = [' [',
           ]  
 
 start = time.time()
-  
-file_timing = open(path + "\\timings.txt","r")
-timings = []
-timings = json.load(file_timing)
-file_timing.close()
+try:
+    file = open(os.getcwd() + "\\transcript_yt.txt","r")
+    count = 0
+    L=[]
+    for line in file:
+        L.append(line.strip())
+        count+=1
+    file.close()
 
-length = len(timings)
+    for i in range(0,count,2):
+        L[i]='('+L[i]+')'
+    M=L.copy()
+    final = []
+    for i in range(0,count,2):
+        final.append(L[i]+' '+M[i+1])
 
-bar = progressbar.ProgressBar(max_value=length,  
-                              widgets=widgets).start() 
+    f = open(path + '\\transcript.txt', 'w')
+    for i in final:
+        f.write(i)
+        f.write('\n')
+except:
+    file_timing = open(path + "\\timings.txt","r")
+    timings = []
+    timings = json.load(file_timing)
+    file_timing.close()
 
-def dur(count):
-    count = int(count)
-    seconds = str(count % 60).zfill(2)
-    minutes = str(int(count / 60)).zfill(2)
-    return '(' + minutes + ':' + seconds + ')'
+    length = len(timings)
 
-count = 0
-i = 0
-r = sr.Recognizer()
+    bar = progressbar.ProgressBar(max_value=length,  
+                                widgets=widgets).start() 
 
-file_t = open(path + "\\transcript.txt","w")
+    def dur(count):
+        count = int(count)
+        seconds = str(count % 60).zfill(2)
+        minutes = str(int(count / 60)).zfill(2)
+        return '(' + minutes + ':' + seconds + ')'
 
-import os
-my_path = os.getcwd() + '\\chunks'
-times = []
+    count = 0
+    i = 0
+    r = sr.Recognizer()
 
-while(i < length - 1):
-    filename = my_path + '\\chunk{0}.wav'.format(i)
-    str_time = dur(timings[i]/1000)
-    inner_start = time.time()
-    with sr.AudioFile(filename) as source:
-        r.adjust_for_ambient_noise(source)
-        audio_data = r.record(source)
-        try:
-            text = r.recognize_google(audio_data,language="en-US")
-            temp = ""
-            for letter in text:
-                temp += letter.lower()
-            file_t.write(str_time +" "+ temp + "\n")
-        except:
-            file_t.write(str_time +" " +"" + "\n")
-    #print("--- %s seconds ---"% (time.time() - inner_start))
-    times.append((time.time() - inner_start))
-    if(i < length):
-        bar.update(i)
-    i += 1
+    file_t = open(path + "\\transcript.txt","w")
 
-file_t.close()
-print("Complete.")
-sum = 0
-for duration in times:
-    sum += float(duration)
-print("--- %s seconds/transcription ---"%(sum/len(times)))
-print("--- %s seconds ---"% (time.time() - start))
+    import os
+    my_path = os.getcwd() + '\\chunks'
+    times = []
+
+    while(i < length - 1):
+        filename = my_path + '\\chunk{0}.wav'.format(i)
+        str_time = dur(timings[i]/1000)
+        inner_start = time.time()
+        with sr.AudioFile(filename) as source:
+            r.adjust_for_ambient_noise(source)
+            audio_data = r.record(source)
+            try:
+                text = r.recognize_google(audio_data,language="en-US")
+                temp = ""
+                for letter in text:
+                    temp += letter.lower()
+                file_t.write(str_time +" "+ temp + "\n")
+            except:
+                file_t.write(str_time +" " +"" + "\n")
+        #print("--- %s seconds ---"% (time.time() - inner_start))
+        times.append((time.time() - inner_start))
+        if(i < length):
+            bar.update(i)
+        i += 1
+
+    file_t.close()
+    print("Complete.")
+    sum = 0
+    for duration in times:
+        sum += float(duration)
+    print("--- %s seconds/transcription ---"%(sum/len(times)))
+    print("--- %s seconds ---"% (time.time() - start))
+    

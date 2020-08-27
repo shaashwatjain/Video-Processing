@@ -7,6 +7,9 @@ python 1.convert_to_audio.py
 ECHO Converting to chunks (This might take some time for larger videos)
 python 2b.decibles_try.py
 python 3a.screenshots.py
+::ECHO If you have a youtube transcript, place it in "files/" and name it "transcript_yt.txt" in specified format.
+::ECHO If not... press enter
+::PAUSE
 ECHO Now we'll parallel compute the transcripts
 call parallel.bat
 :: start /wait cmd.exe /c "python 3a.screenshots.py & python 3b.ocr_gen.py"

@@ -132,7 +132,7 @@ print ("Minima:", s[mi])
 print ("Maxima:", s[ma])
 
 
-if len(s[mi]) and len(s[ma]):
+if len(s[mi]) > 1 and len(s[ma]) > 1:
     threshold = (s[mi][-2]+s[ma][-2])/2
 elif len(s[mi]):
     threshold = s[mi][-1]
