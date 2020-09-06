@@ -1,1 +1,40 @@
-<mxfile host="app.diagrams.net" modified="2020-09-06T07:05:59.740Z" agent="5.0 (Windows)" version="13.6.6" etag="mn4DaWIqdP8rLFI9MAcp" type="github"><diagram id="D70w1WDiF-2uHUKc6iii">UzV2zq1wL0osyPDNT0nNUTV2VTV2LsrPL4GwciucU3NyVI0MMlNUjV1UjYwMgFjVyA2HrCFY1qAgsSg1rwSLBiADYTaQg2Y1AA==</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2020-09-06T09:30:07.278Z" agent="5.0 (Windows)" etag="4o6O_zSHry4SjrwP2DMR" version="13.6.6" type="github">
+  <diagram id="D70w1WDiF-2uHUKc6iii" name="Page-1">
+    <mxGraphModel dx="371" dy="1788" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="RsHCbe-ZS_2DFBT4WyQt-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="RsHCbe-ZS_2DFBT4WyQt-3" target="RsHCbe-ZS_2DFBT4WyQt-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="RsHCbe-ZS_2DFBT4WyQt-3" value="Transcript" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="920" y="-770" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="RsHCbe-ZS_2DFBT4WyQt-10" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="1100" y="-770" width="530" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="RsHCbe-ZS_2DFBT4WyQt-11" value="" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;" vertex="1" parent="RsHCbe-ZS_2DFBT4WyQt-10">
+          <mxGeometry x="-10" y="-10" width="540" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="RsHCbe-ZS_2DFBT4WyQt-4" value="Finding topics using an alternate approach to n-grams" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="RsHCbe-ZS_2DFBT4WyQt-10">
+          <mxGeometry width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="RsHCbe-ZS_2DFBT4WyQt-6" value="&lt;div&gt;Treating redundancy &lt;br&gt;&lt;/div&gt;&lt;div&gt;&amp;amp;&lt;/div&gt;&lt;div&gt;Lemmatizing topics&lt;br&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="RsHCbe-ZS_2DFBT4WyQt-10">
+          <mxGeometry x="200" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="RsHCbe-ZS_2DFBT4WyQt-7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="RsHCbe-ZS_2DFBT4WyQt-10" source="RsHCbe-ZS_2DFBT4WyQt-4" target="RsHCbe-ZS_2DFBT4WyQt-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="RsHCbe-ZS_2DFBT4WyQt-8" value="Selecting important topics using Kernel Density Estimator" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="RsHCbe-ZS_2DFBT4WyQt-10">
+          <mxGeometry x="400" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="RsHCbe-ZS_2DFBT4WyQt-9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="RsHCbe-ZS_2DFBT4WyQt-10" source="RsHCbe-ZS_2DFBT4WyQt-6" target="RsHCbe-ZS_2DFBT4WyQt-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="RsHCbe-ZS_2DFBT4WyQt-12" value="Topic Finding" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="1315" y="-800" width="100" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
