@@ -1,4 +1,4 @@
-# Import the AudioSegment class for processing audio and the 
+# Import the AudioSegment class for processing audio and the
 # split_on_silence function for separating out silent chunks.
 from pydub import AudioSegment
 from pydub.silence import split_on_silence, detect_silence

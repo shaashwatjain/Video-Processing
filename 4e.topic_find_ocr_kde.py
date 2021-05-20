@@ -1,14 +1,14 @@
 import spacy
 import os
 
-path = os.getcwd() + '\\files'
+path = os.getcwd() + "\\files"
 
-nlp = spacy.load('en_core_web_sm')
+nlp = spacy.load("en_core_web_sm")
 
-text = open(path + "\\ocr_transcript.txt",'r', encoding="utf-8").read()
+text = open(path + "\\ocr_transcript.txt", "r", encoding="utf-8").read()
 list_sentences = text.split("\n")
 
-synonyms = open(path + "\\synonyms.txt", 'r').read().split("\n")
+synonyms = open(path + "\\synonyms.txt", "r").read().split("\n")
 synonyms.pop(-1)
 
 pos_tagged = []
@@ -16,36 +16,36 @@ for sentence in list_sentences:
     doc = nlp(sentence)
     temp_tag = []
     for token in doc:
-        temp_tag.append((token.text,token.tag_))
+        temp_tag.append((token.text, token.tag_))
     pos_tagged.append(temp_tag)
 
 list_sing = []
 list_plu = []
 
 for sentence in pos_tagged:
-    for num,word_set in enumerate(sentence):
+    for num, word_set in enumerate(sentence):
         if "NN" in word_set[1]:
             count = 1
             newstring = word_set[0]
             list_sing.append(newstring)
-            while((num + count) < len(sentence) and ("NN" in sentence[num + count][1])):
+            while (num + count) < len(sentence) and ("NN" in sentence[num + count][1]):
                 newstring += " " + sentence[num + count][0]
                 count += 1
-            if(count > 1):
+            if count > 1:
                 list_plu.append(newstring)
         if "JJ" in word_set[1]:
             count = 1
             newstring = word_set[0]
-            while((num + count) < len(sentence) and ("JJ" in sentence[num + count][1])):
+            while (num + count) < len(sentence) and ("JJ" in sentence[num + count][1]):
                 newstring += " " + sentence[num + count][0]
                 count += 1
-            while((num + count) < len(sentence) and ("NN" in sentence[num + count][1])):
+            while (num + count) < len(sentence) and ("NN" in sentence[num + count][1]):
                 newstring += " " + sentence[num + count][0]
                 count += 1
-            if("NN" in sentence[num + count - 1][1]):
+            if "NN" in sentence[num + count - 1][1]:
                 list_plu.append(newstring)
 
-counted_sing = dict()                
+counted_sing = dict()
 for word in set(list_sing):
     count = 0
     for match in list_sing:
@@ -54,7 +54,7 @@ for word in set(list_sing):
     counted_sing[word] = count
 
 
-counted_plu = dict()                
+counted_plu = dict()
 for word in set(list_plu):
     count = 0
     for match in list_plu:
@@ -75,19 +75,21 @@ for i in range(len(imp_topics)):
 
 from difflib import SequenceMatcher
 
-def similarity(a,b):
-    rat = SequenceMatcher(None,a,b).ratio()
+
+def similarity(a, b):
+    rat = SequenceMatcher(None, a, b).ratio()
     return float(rat)
 
+
 to_delete = []
-suffix = ['s','ing','ed']
+suffix = ["s", "ing", "ed"]
 for suf in suffix:
     for topic in counted_plu:
-        if topic+suf in counted_plu:
-            counted_plu[topic] += counted_plu[topic+suf]
-            to_delete.append(topic+suf)
+        if topic + suf in counted_plu:
+            counted_plu[topic] += counted_plu[topic + suf]
+            to_delete.append(topic + suf)
 
-#print(to_delete)
+# print(to_delete)
 for item in to_delete:
     del counted_plu[item]
 
@@ -96,16 +98,16 @@ for topic in counted_plu:
     if topic not in to_delete:
         for check in counted_plu:
             if check != topic and check not in to_delete:
-                if similarity(check,topic) > 0.85:
-                    #print(check,topic)
-                    if(counted_plu[check] > counted_plu[topic]):
+                if similarity(check, topic) > 0.85:
+                    # print(check,topic)
+                    if counted_plu[check] > counted_plu[topic]:
                         to_delete.append(topic)
                         counted_plu[check] += counted_plu[topic]
                     else:
                         to_delete.append(check)
                         counted_plu[topic] += counted_plu[check]
 
-#print(to_delete)
+# print(to_delete)
 for item in set(to_delete):
     del counted_plu[item]
 
@@ -113,11 +115,11 @@ for item in set(to_delete):
 to_delete = []
 for suf in suffix:
     for topic in counted_sing:
-        if topic+suf in counted_sing:
-            counted_sing[topic] += counted_sing[topic+suf]
-            to_delete.append(topic+suf)
+        if topic + suf in counted_sing:
+            counted_sing[topic] += counted_sing[topic + suf]
+            to_delete.append(topic + suf)
 
-#print(to_delete)
+# print(to_delete)
 for item in to_delete:
     del counted_sing[item]
 
@@ -131,23 +133,24 @@ import matplotlib.pyplot as plt
 plu_topic_val = list(counted_plu.values())
 
 a = np.array(plu_topic_val).reshape(-1, 1)
-#print(a)
-kde = KernelDensity(kernel='gaussian', bandwidth=1).fit(a)
-s = np.linspace(0,max(plu_topic_val))
-e = kde.score_samples(s.reshape(-1,1))
+# print(a)
+kde = KernelDensity(kernel="gaussian", bandwidth=1).fit(a)
+s = np.linspace(0, max(plu_topic_val))
+e = kde.score_samples(s.reshape(-1, 1))
 plt.plot(s, e)
-#plt.show()
+# plt.show()
 
 print("\n\n\nTop Plural Topics :\n")
 from scipy.signal import argrelextrema
+
 mi, ma = argrelextrema(e, np.less)[0], argrelextrema(e, np.greater)[0]
-print ("Minima:", s[mi])
-print ("Maxima:", s[ma])
+print("Minima:", s[mi])
+print("Maxima:", s[ma])
 
 threshold = None
 
 if len(s[mi]) and len(s[ma]):
-    threshold = (s[mi][0]+s[ma][0])/2
+    threshold = (s[mi][0] + s[ma][0]) / 2
 elif len(s[mi]):
     threshold = s[mi][0]
 elif len(s[ma]):
@@ -195,6 +198,7 @@ for topic in counted_plu:
 
 
 import json
+
 file_screen = open(path + "\\multiple_ocr.txt", "w")
 json.dump(counted_plu_export, file_screen)
 file_screen.close()

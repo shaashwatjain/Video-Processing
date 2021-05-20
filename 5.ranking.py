@@ -1,4 +1,4 @@
-'''
+"""
 Building the foudation ranking system for topic finding.
 Ranking to be taken into consideration:
 Transcript (Single and Multiple) - 1/occurrence
@@ -6,38 +6,39 @@ Synonym Derived - +1/occurence
 OCR verified - +1/occurrence
 These values can be changed later according to results
 Going to implement synonym in topic_find itself
-'''
+"""
 
 # Using two transcripts - Audio and OCR
 import spacy
 import json
 import os
-path = os.getcwd() + '\\files'
-nlp = spacy.load('en_core_web_sm')
 
-plural_words_file = open(path + "\\multiple.txt","r")
+path = os.getcwd() + "\\files"
+nlp = spacy.load("en_core_web_sm")
+
+plural_words_file = open(path + "\\multiple.txt", "r")
 plural_words = dict()
 plural_words = json.load(plural_words_file)
 plural_words_file.close()
-#print(plural_words)
+# print(plural_words)
 
-singular_words_file = open(path + "\\single.txt","r")
+singular_words_file = open(path + "\\single.txt", "r")
 singular_words = dict()
 singular_words = json.load(singular_words_file)
 singular_words_file.close()
 
 plural_words_ocr = dict()
 singular_words_ocr = dict()
-try:    
-    plural_words_file_ocr = open(path + "\\multiple_ocr.txt","r")
+try:
+    plural_words_file_ocr = open(path + "\\multiple_ocr.txt", "r")
     plural_words_ocr = json.load(plural_words_file_ocr)
     plural_words_file_ocr.close()
-    #print(plural_words_ocr)
+    # print(plural_words_ocr)
 
-    singular_words_file_ocr = open(path + "\\single_ocr.txt","r")
+    singular_words_file_ocr = open(path + "\\single_ocr.txt", "r")
     singular_words_ocr = json.load(singular_words_file_ocr)
     singular_words_file_ocr.close()
-    #print(singular_words_ocr)
+    # print(singular_words_ocr)
 except:
     print("No OCR transcript generated")
 
@@ -50,15 +51,15 @@ for topic in plural_words:
         for check in plural_words:
             if check != topic and check not in to_delete:
                 if topic in check:
-                    #print(check,topic)
-                    if(plural_words[check] > plural_words[topic]):
+                    # print(check,topic)
+                    if plural_words[check] > plural_words[topic]:
                         to_delete.append(topic)
                         plural_words[check] += plural_words[topic]
                     else:
                         to_delete.append(check)
                         plural_words[topic] += plural_words[check]
 
-#print(to_delete)
+# print(to_delete)
 for item in set(to_delete):
     del plural_words[item]
 
@@ -76,6 +77,7 @@ for item in set(to_delete):
 #     return result
 
 # ocr_rank("symbolic reasoning")
+
 
 def ocr_rank(text):
     text = "symbolic reasoning"
@@ -102,12 +104,13 @@ def ocr_rank(text):
         result = result1
     return result
 
-for topic,value in plural_words.items():
+
+for topic, value in plural_words.items():
     plural_topics[topic] = value + ocr_rank(topic)
 
 print(plural_topics)
 
-for topic,value in singular_words.items():
+for topic, value in singular_words.items():
     singular_topics[topic] = value + ocr_rank(topic)
 
 print(singular_topics)
@@ -119,17 +122,18 @@ import matplotlib.pyplot as plt
 plu_topic_val = list(plural_topics.values())
 
 a = np.array(plu_topic_val).reshape(-1, 1)
-#print(a)
-kde = KernelDensity(kernel='gaussian', bandwidth=1).fit(a)
-s = np.linspace(0,max(plu_topic_val))
-e = kde.score_samples(s.reshape(-1,1))
+# print(a)
+kde = KernelDensity(kernel="gaussian", bandwidth=1).fit(a)
+s = np.linspace(0, max(plu_topic_val))
+e = kde.score_samples(s.reshape(-1, 1))
 plt.plot(s, e)
-#plt.show()
+# plt.show()
 
 from scipy.signal import argrelextrema
+
 mi, ma = argrelextrema(e, np.less)[0], argrelextrema(e, np.greater)[0]
-print ("Minima:", s[mi])
-print ("Maxima:", s[ma])
+print("Minima:", s[mi])
+print("Maxima:", s[ma])
 
 plural_topics_export = dict()
 singular_topics_export = dict()
@@ -137,7 +141,7 @@ singular_topics_export = dict()
 threshold = None
 
 if len(s[mi]) and len(s[ma]):
-    threshold = (s[mi][0]+s[ma][0])/2
+    threshold = (s[mi][0] + s[ma][0]) / 2
 elif len(s[mi]):
     threshold = s[mi][0]
 elif len(s[ma]):
@@ -158,28 +162,29 @@ for topic in plural_topics:
 sorted_a = list(plural_topics_export.keys())
 sorted_a.sort()
 
-for i,check in enumerate(sorted_a):
+for i, check in enumerate(sorted_a):
     if sorted_a[i - 1] in check:
-        del plural_topics_export[sorted_a[i-1]]
+        del plural_topics_export[sorted_a[i - 1]]
 
 sing_topic_val = list(singular_topics.values())
 
 a = np.array(sing_topic_val).reshape(-1, 1)
-#print(a)
-kde = KernelDensity(kernel='gaussian', bandwidth=1).fit(a)
-s = np.linspace(0,max(sing_topic_val))
-e = kde.score_samples(s.reshape(-1,1))
+# print(a)
+kde = KernelDensity(kernel="gaussian", bandwidth=1).fit(a)
+s = np.linspace(0, max(sing_topic_val))
+e = kde.score_samples(s.reshape(-1, 1))
 plt.plot(s, e)
-#plt.show()
+# plt.show()
 
 from scipy.signal import argrelextrema
+
 mi, ma = argrelextrema(e, np.less)[0], argrelextrema(e, np.greater)[0]
-print ("Minima:", s[mi])
-print ("Maxima:", s[ma])
+print("Minima:", s[mi])
+print("Maxima:", s[ma])
 
 
 if len(s[mi]) > 1 and len(s[ma]) > 1:
-    threshold = (s[mi][-2]+s[ma][-2])/2
+    threshold = (s[mi][-2] + s[ma][-2]) / 2
 elif len(s[mi]):
     threshold = s[mi][-1]
 elif len(s[ma]):
@@ -194,8 +199,8 @@ for topic in singular_topics:
         singular_topics_export[topic] = singular_topics[topic]
 
 
-
 import json
+
 file_screen = open(path + "\\finalTopics_plu.txt", "w")
 json.dump(list(plural_topics_export.keys()), file_screen)
 file_screen.close()
