@@ -9,10 +9,11 @@ Going to implement synonym in topic_find itself
 '''
 
 # Using two transcripts - Audio and OCR
-
+import spacy
 import json
 import os
 path = os.getcwd() + '\\files'
+nlp = spacy.load('en_core_web_sm')
 
 plural_words_file = open(path + "\\multiple.txt","r")
 plural_words = dict()
@@ -43,17 +44,62 @@ except:
 plural_topics = dict()
 singular_topics = dict()
 
+to_delete = []
+for topic in plural_words:
+    if topic not in to_delete:
+        for check in plural_words:
+            if check != topic and check not in to_delete:
+                if topic in check:
+                    #print(check,topic)
+                    if(plural_words[check] > plural_words[topic]):
+                        to_delete.append(topic)
+                        plural_words[check] += plural_words[topic]
+                    else:
+                        to_delete.append(check)
+                        plural_words[topic] += plural_words[check]
+
+#print(to_delete)
+for item in set(to_delete):
+    del plural_words[item]
+
+# def ocr_rank(text):
+#     count = []
+#     topics = text.split()
+#     for topic in topics:
+#         if topic in singular_words_ocr:
+#             count.append(singular_words_ocr[topic])
+#         else:
+#             count.append(0)
+#     result = min(count)
+#     if text in plural_words_ocr:
+#         result = plural_words_ocr[text]
+#     return result
+
+# ocr_rank("symbolic reasoning")
+
 def ocr_rank(text):
+    text = "symbolic reasoning"
     count = []
     topics = text.split()
+    tag = nlp(text)
+    for tagged in tag:
+        if tagged.tag_ in "JJ":
+            topics.remove(tagged.text)
     for topic in topics:
         if topic in singular_words_ocr:
             count.append(singular_words_ocr[topic])
         else:
             count.append(0)
-    result = min(count)
-    if text in plural_words_ocr:
-        result = plural_words_ocr[text]
+    result1 = min(count)
+    result = 0
+    for plu_topic in plural_words_ocr:
+        if text in plu_topic:
+            print(plu_topic)
+            result2 = plural_words_ocr[plu_topic]
+            if result2 > result:
+                result = result2
+    if not result:
+        result = result1
     return result
 
 for topic,value in plural_words.items():

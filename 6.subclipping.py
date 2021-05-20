@@ -103,6 +103,7 @@ sec_topics_finding = time_calc(single_topics)
 
 #starting the plural topics from the 
 for i,j in sec_plural_topics.items():
+    print(i,j)
     mark = sec_first_occr[i][0]
     iter = 0
     while j[iter]<mark:
@@ -190,7 +191,8 @@ for topic in final_plural_topics.keys():
     if(sum > max_duration):
         max_duration = sum
         most_occurring_topic2 = topic
-
+        
+video = []
 abort = 0
 if(not most_occurring_topic == most_occurring_topic2):
     print("Please choose your main topic(1/2):\n1. "+most_occurring_topic+"\n2. "+most_occurring_topic2+"\n")
@@ -216,13 +218,13 @@ if not abort:
         print("Error creating directory")
         
     for topic in final_plural_topics.keys():
-        i = 1
         for arr in final_plural_topics[topic]:
             start_duration = arr[0]
             end_duration = arr[1]
             if most_occurring_topic in topic:
                 continue
             if(end_duration - start_duration > 10):
-                video = VideoFileClip("video.mp4").subclip(start_duration, end_duration)
-                video.write_videofile(most_occurring_topic + "/" + topic + str(i) +  ".mp4")
-            i += 1
+                video.append(VideoFileClip("video.mp4").subclip(start_duration, end_duration))
+        finalClip = concatenate_videoclips(video)  
+        finalClip.write_videofile(most_occurring_topic + "/" + topic +  ".mp4")
+        print("Written file :"+topic)

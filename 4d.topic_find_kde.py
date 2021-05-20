@@ -248,7 +248,7 @@ else:
 
 
 for topic in counted_plu:
-    if counted_plu[topic] > threshold:
+    if counted_plu[topic] >= float(threshold):
         print(counted_plu[topic], topic)
         counted_plu_export[topic] = counted_plu[topic]
 

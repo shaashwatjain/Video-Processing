@@ -5,7 +5,7 @@ path = os.getcwd() + '\\files'
 
 nlp = spacy.load('en_core_web_sm')
 
-text = open(path + "\\ocr_transcript.txt",'r').read()
+text = open(path + "\\ocr_transcript.txt",'r', encoding="utf-8").read()
 list_sentences = text.split("\n")
 
 synonyms = open(path + "\\synonyms.txt", 'r').read().split("\n")
@@ -120,25 +120,6 @@ for suf in suffix:
 #print(to_delete)
 for item in to_delete:
     del counted_sing[item]
-
-# to_delete = []
-# for topic in counted_sing:
-#     if topic not in to_delete:
-#         for check in counted_sing:
-#             if check != topic and check not in to_delete:
-#                 if similarity(check,topic) > 0.85:
-#                     if(len(check) < len(topic)):
-#                         to_delete.append(topic)
-#                         counted_sing[check] += counted_sing[topic]
-#                     else:
-#                         to_delete.append(check)
-#                         counted_sing[topic] += counted_sing[check]
-#     else:
-#         break
-
-# #print(to_delete)
-# for item in set(to_delete):
-#     del counted_sing[item]
 
 counted_plu_export = dict()
 counted_sing_export = dict()
