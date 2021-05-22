@@ -1,0 +1,5 @@
+*.mp4
+files/
+chunks.
+captures/
+__pycache__/
