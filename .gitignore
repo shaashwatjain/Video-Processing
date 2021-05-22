@@ -2,3 +2,4 @@
 files/
 chunks.
 captures/
+__pycache__/
