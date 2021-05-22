@@ -10,8 +10,8 @@ full_path = path + "\\transcript_yt.txt"
 cnt, flag = 0, 0
 content = []
 
-if os.stat(full_path).st_size == 0:
-    print("Already present transcript is empty...")
+#  if os.stat(full_path).st_size == 0:
+#      print("Already present transcript is empty...")
 
 def isTimeFormat(value):
     try:
@@ -46,9 +46,9 @@ if flag==1 and content:
 file.close()
 
 f = open(path + "\\transcript.txt", "w")
-if cnt<2:
-    print("Transcript is not correct")
-    sys.exit()
+#  if cnt<2:
+#      print("Transcript is not correct")
+#      sys.exit()
 
 for i in range(0, cnt, 2):
     row = content[i] + " " + content[i + 1] + "\n"
