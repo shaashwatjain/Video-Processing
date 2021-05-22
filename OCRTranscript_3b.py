@@ -61,6 +61,7 @@ def ocr_gen(timings, videoname):
                     final_str = ocr_core("files_"+ videoname +"/captures/"+f)
                     break
                 except:
+                    final_str = ' '
                     continue
 
             if(not similar_texts(final_str, complete_info[-1])):
