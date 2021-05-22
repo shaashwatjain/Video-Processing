@@ -2,6 +2,8 @@ import speech_recognition as sr
 import json
 import progressbar
 import os
+import time
+import sys
 
 
 def dur(count):
