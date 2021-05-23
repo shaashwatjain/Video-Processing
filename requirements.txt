@@ -1,0 +1,15 @@
+nltk==3.4.5
+pytesseract==0.3.7
+Send2Trash==1.5.0
+image==1.5.33
+opencv_python==4.2.0.32
+spacy==2.2.3
+pydub==0.24.1
+numpy==1.19.5
+scipy==1.4.1
+moviepy==1.0.3
+SpeechRecognition==3.8.1
+matplotlib==3.1.3
+Pillow==8.2.0
+progressbar33==2.4
+scikit_learn==0.24.2
