@@ -15,8 +15,8 @@ def runFull(videoname, counted_sing, counted_sing_ocr, counted_plu, counted_plu_
     screenshots.screenshoting(timings,videoname)
     ocr_transcript = OCR.ocr_gen(timings,videoname)
     transcript = trans.transcript(timings,videoname)
-    Topic.topic_find(transcript, counted_sing, counted_plu)
-    Topic.topic_find(ocr_transcript, counted_sing_ocr, counted_plu_ocr)
+    (counted_sing, counted_plu) = Topic.topic_find(transcript, counted_sing, counted_plu)
+    (counted_sing_ocr, counted_plu_ocr) = Topic.topic_find(ocr_transcript, counted_sing_ocr, counted_plu_ocr)
     most_occuring = Ranking.ranking(counted_plu, counted_sing, counted_sing_ocr, counted_plu_ocr)
     print(counted_plu)
     return most_occuring

@@ -77,9 +77,10 @@ def topic_find(transcript, counted_sing = dict(), counted_plu = dict()):
 
     # print(counted_plu)
 
-
-    display_topics(counted_sing)
-    display_topics(counted_plu)
+    if counted_sing:
+        display_topics(counted_sing)
+    if counted_plu:
+        display_topics(counted_plu)
 
     print('Found Topics')
 
