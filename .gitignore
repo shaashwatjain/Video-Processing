@@ -3,3 +3,4 @@ files/
 chunks.
 captures/
 __pycache__/
+*.txt
