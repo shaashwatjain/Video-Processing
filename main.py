@@ -32,10 +32,10 @@ def runFull(videoname, counted_sing, counted_sing_ocr, counted_plu, counted_plu_
     )
 
     #  print(counted_plu)
-    segmentation = Subclipping.subclipping(
+    Subclipping.subclipping(
         list(counted_sing.keys()), list(counted_plu.keys()), most_occuring, transcript
     )
-    return most_occuring
+    #  return most_occuring
 
 
 def runWithTranscript(
@@ -58,10 +58,9 @@ def runWithTranscript(
     )
 
     #  print(counted_plu)
-    segmentation = Subclipping.subclipping(
+    Subclipping.subclipping(
         list(counted_sing.keys()), list(counted_plu.keys()), most_occuring, transcript
     )
-    return most_occuring
 
 
 files = []
