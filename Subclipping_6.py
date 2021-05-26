@@ -139,7 +139,7 @@ def calcInterval(arg1, arg2):
     return answerDict
 
 
-def segmentVideo(mostOccuring, finalPluralTopics):
+def segmentVideo(mostOccuring, finalPluralTopics, videoname):
     mostOccurringTopic2 = ""
     maxDuration = 0
     for topic in finalPluralTopics.keys():
@@ -152,7 +152,7 @@ def segmentVideo(mostOccuring, finalPluralTopics):
             mostOccurringTopic2 = topic
 
     video = []
-    abort = 0
+    debug = 0
 
     if mostOccuring != mostOccurringTopic2:
         print(
@@ -168,15 +168,14 @@ def segmentVideo(mostOccuring, finalPluralTopics):
             mostOccuring = mostOccurringTopic2
         else:
             print("Invalid option... Aborting")
-            abort = 1
+            return 1
+    
+    del finalPluralTopics[mostOccuring]
 
-    ######################
-    # Error is from here #
-    ######################
-    if not abort:
+    if not debug:
         try:
-            if not os.path.exists(mostOccuring):
-                os.makedirs(mostOccuring)
+            if not os.path.exists("files_" + videoname + "/" + mostOccuring):
+                os.makedirs("files_" + videoname + "/" + mostOccuring)
                 print("Created Directory")
         except:
             print("Error creating directory")
@@ -189,15 +188,22 @@ def segmentVideo(mostOccuring, finalPluralTopics):
                     continue
                 if endDuration - startDuration > 10:
                     video.append(
-                        VideoFileClip("machine.mp4").subclip(startDuration, endDuration)
+                        VideoFileClip(videoname+'.mp4').subclip(startDuration, endDuration)
                     )
-            finalClip = concatenate_videoclips(video)
-            finalClip.write_videofile(mostOccuring + "/" + topic + ".mp4")
-            print("Written file :" + topic)
+                    # print(startDuration, endDuration)
+            # print(video)
+            if video:
+                finalClip = concatenate_videoclips(video)
+                finalClip.write_videofile("files_" + videoname + "/"+ mostOccuring + "/" + topic + ".mp4")
+                print("Written file :" + topic + "\n")
+    else:
+        print(mostOccuring+":")
+        for topic in finalPluralTopics.keys():
+            print(topic)
     return 0
 
 
-def subclipping(listOfSingWords, listOfPlurWords, mostOccuring, transcript):
+def subclipping(listOfSingWords, listOfPlurWords, mostOccuring, transcript, videoname):
     script = modifyTranscript(transcript)
     topics, firstOccr = preprocessing(listOfPlurWords, transcript)
     singleTopics = singleTopicsFinding(listOfSingWords, script)
@@ -221,4 +227,4 @@ def subclipping(listOfSingWords, listOfPlurWords, mostOccuring, transcript):
     finalPluralTopics = calcInterval(lenPlural, secPluralTopics)
     finalSingleTopics = calcInterval(lenSingle, secSingleTopics)
 
-    i = segmentVideo(mostOccuring, finalPluralTopics)
+    segmentVideo(mostOccuring, finalPluralTopics, videoname)
