@@ -1,6 +1,6 @@
 *.mp4
 files/
-chunks.
+chunks/
 captures/
 __pycache__/
 *.txt
