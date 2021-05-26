@@ -8,7 +8,6 @@ import TopicFind_4 as Topic
 import Ranking_5 as Ranking
 import Subclipping_6 as Subclipping
 import os
-import sys
 import send2trash
 
 
@@ -33,7 +32,7 @@ def runFull(videoname, counted_sing, counted_sing_ocr, counted_plu, counted_plu_
 
     #  print(counted_plu)
     Subclipping.subclipping(
-        list(counted_sing.keys()), list(counted_plu.keys()), most_occuring, transcript
+        list(counted_sing.keys()), list(counted_plu.keys()), most_occuring, transcript, videoname
     )
     #  return most_occuring
 
@@ -44,6 +43,7 @@ def runWithTranscript(
     timings = Timings.timings(videoname)
     screenshots.screenshoting(timings, videoname)
     ocr_transcript = OCR.ocr_gen(timings, videoname)
+    # print(ocr_transcript)
     transcript = trans.transcript(timings, videoname)
     (counted_sing, counted_plu) = Topic.topic_find(
         transcript, counted_sing, counted_plu
@@ -59,7 +59,7 @@ def runWithTranscript(
 
     #  print(counted_plu)
     Subclipping.subclipping(
-        list(counted_sing.keys()), list(counted_plu.keys()), most_occuring, transcript
+        list(counted_sing.keys()), list(counted_plu.keys()), most_occuring, transcript, videoname
     )
 
 
