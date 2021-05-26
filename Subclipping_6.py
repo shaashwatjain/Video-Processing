@@ -1,11 +1,17 @@
-from datetime import datetime
-import matplotlib.pyplot as plt
-import numpy as np
-from itertools import accumulate
 import os
 import sys
 import json
+import matplotlib.pyplot as plt
+import numpy as np
+from datetime import datetime
+from itertools import accumulate
+from collections import defaultdict
 
+def modifyTranscript(transcript):
+    script = []
+    for i in transcript:
+        script.append(i.split())
+    return script
 
 def preprocessing(listOfPlurWords, transcript):
     # splitting the plural topics into individual words
@@ -15,75 +21,56 @@ def preprocessing(listOfPlurWords, transcript):
             topics.add(j)
 
     # calculating the first occurence of the plural topics
-    firstOccr = {}
+    firstOccr = defaultdict(str)
     for i in listOfPlurWords:
         for line in transcript:
             if i in line:
-                firstOccr[i] = line.split()[0]
+                firstOccr[i] = [line.split()[0]]
                 break
-    #  print(first_occr.items())
-    return list(topics, firstOccr)
+    return list(topics), firstOccr
 
-
-"""
-def single_topics_finding(L):
-    temp_dict = {}
-    for i in L:
-        li = []
-        for j in script:
+def singleTopicsFinding(listOfWords, transcript):
+    temp_dict = defaultdict(list)
+    for i in listOfWords:
+        tempList = []
+        for j in transcript:
             if i in j:
-                li.append(j[0])
-        temp_dict[i] = li
+                temp_dict[i].append(j[0])
     return temp_dict
 
+def pluralTopicsFinding(listOfPlurWords, partialResultTopics):
+    temp_dict = defaultdict(list)
+    for topic in listOfPlurWords:
+        tempSet = set()
+        for i in topic.split():
+            tempSet.update(partialResultTopics[i])
+        tempSet = sorted(tempSet)
+        temp_dict[topic] = tempSet
+    return temp_dict
 
-single_topics = single_topics_finding(list_of_newwords)
+def convertTime(val):
+    return sum(x * int(t) for x, t in zip([1, 60, 3600], reversed(val.split(":"))))
 
-partial_result = single_topics_finding(topics)
-# print(partial_result.items())
-
-plural_topics = {}
-for topic in list_of_plurwords:
-    li = set()
-    for i in topic.split():
-        li.update(partial_result[i])
-    li = sorted(li)
-    plural_topics[topic] = li
-# print(plural_topics.items())
-
-
-def time_calc(result):
-    time = list(result.items())
-    time_diff = {}
-    FMT = "(%M:%S)"
-    for i in time:
-        diff = []
-        for j in range(len(i[1])):
-            s1 = i[1][j]
-            tdelta = datetime.strptime(s1, FMT)
-            sec = (tdelta.minute * 60) + tdelta.second
-            diff.append(sec)
-        k = i[0]
-        time_diff[k] = diff
-    return time_diff
-
-
-# converting the string time to sec
-sec_plural_topics = time_calc(plural_topics)
-sec_first_occr = time_calc(first_occr)
-sec_single_topics = time_calc(single_topics)
-sec_topics_finding = time_calc(single_topics)
+def timeCalc(dictString):
+    # Converting string time to second
+    tempDict = defaultdict(list)
+    for i,j in dictString.items():
+        tempList=[]
+        for k in j:
+            k = k.strip('()')
+            tempList.append(convertTime(k))
+        tempDict[i]=tempList
+    return tempDict
 
 # starting the plural topics from the
-for i, j in sec_plural_topics.items():
-    print(i, j)
-    mark = sec_first_occr[i][0]
-    iter = 0
-    while j[iter] < mark:
-        j.pop(0)
-# print(sec_plural_topics)
+def cleaningPluralTopics(secPluralTopics, secFirstOccr):
+    for i, j in secPluralTopics.items():
+        mark = secFirstOccr[i][0]
+        while j[0] < mark:
+            j.pop(0)
+    return secPluralTopics
 
-
+"""
 def diff_calc(result):
     diff = {}
     for i, j in result.items():
@@ -216,7 +203,16 @@ if not abort:
         print("Written file :" + topic)
 
 """
-
-
 def subclipping(listOfSingWords, listOfPlurWords, mostOccuring, transcript):
+    script = modifyTranscript(transcript)
     topics, firstOccr = preprocessing(listOfPlurWords, transcript)
+    singleTopics = singleTopicsFinding(listOfSingWords, script)
+    partialResultTopics = singleTopicsFinding(topics, script)
+    pluralTopics = pluralTopicsFinding(listOfPlurWords, partialResultTopics)
+
+    # converting the string time to sec
+    secFirstOccr = timeCalc(firstOccr)
+    secSingleTopics = timeCalc(singleTopics)
+    secPluralTopics = timeCalc(pluralTopics)
+
+    secPluralTopics = cleaningPluralTopics(secPluralTopics, secFirstOccr)
