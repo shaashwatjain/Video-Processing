@@ -174,12 +174,12 @@ def segmentVideo(mostOccuring, finalPluralTopics, videoname):
     del finalPluralTopics[mostOccuring]
     print(mostOccuring+":")
 
-    try:
-        if not os.path.exists("files_" + videoname + "/" + mostOccuring):
-            os.makedirs("files_" + videoname + "/" + mostOccuring)
-            # print("Created Directory")
-    except:
-        print("Error creating directory")
+    # try:
+    #     if not os.path.exists("files_" + videoname + "/" + mostOccuring):
+    #         os.makedirs("files_" + videoname + "/" + mostOccuring)
+    #         print("Created Directory")
+    # except:
+    #     print("Error creating directory")
 
     for topic in finalPluralTopics.keys():
         print(topic , end=" - ")
@@ -193,7 +193,7 @@ def segmentVideo(mostOccuring, finalPluralTopics, videoname):
                     VideoFileClip(videoname+'.mp4').subclip(startDuration, endDuration)
                 )
                 print("("+str(startDuration)+", "+str(endDuration)+")", end="  ")
-                print("\n")
+        print("\n")
         # print(video)
         if video and debug:
             finalClip = concatenate_videoclips(video)
