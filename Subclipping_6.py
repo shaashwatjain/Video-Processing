@@ -177,7 +177,7 @@ def segmentVideo(mostOccuring, finalPluralTopics, videoname):
     try:
         if not os.path.exists("files_" + videoname + "/" + mostOccuring):
             os.makedirs("files_" + videoname + "/" + mostOccuring)
-            print("Created Directory")
+            # print("Created Directory")
     except:
         print("Error creating directory")
 
@@ -192,7 +192,8 @@ def segmentVideo(mostOccuring, finalPluralTopics, videoname):
                 video.append(
                     VideoFileClip(videoname+'.mp4').subclip(startDuration, endDuration)
                 )
-                print("(",startDuration, endDuration,")", end=", ")
+                print("("+str(startDuration)+", "+str(endDuration)+")", end="  ")
+                print("\n")
         # print(video)
         if video and debug:
             finalClip = concatenate_videoclips(video)
