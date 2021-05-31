@@ -91,9 +91,17 @@ for file in files:
     counted_sing_ocr = dict()
     counted_plu = dict()
     counted_plu_ocr = dict()
-    if file not in transcripts:
-        runFull(file, counted_sing, counted_sing_ocr, counted_plu, counted_plu_ocr)
-    else:
-        runWithTranscript(
-            file, counted_sing, counted_sing_ocr, counted_plu, counted_plu_ocr
-        )
+    f = open('error.txt','w')
+    try:
+        if file not in transcripts:
+            runFull(file, counted_sing, counted_sing_ocr, counted_plu, counted_plu_ocr)
+        else:
+            runWithTranscript(
+                file, counted_sing, counted_sing_ocr, counted_plu, counted_plu_ocr
+            )
+    except Exception as e:
+        f.writelines(file)
+        f.writelines(e.message)
+        f.writelines(e.args)
+        f.write("\n\n\n")
+
