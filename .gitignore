@@ -1,6 +1,8 @@
 *.mp4
+*.mp3
 files/
 chunks/
 captures/
 __pycache__/
 *.txt
+*.pdf

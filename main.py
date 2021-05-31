@@ -101,7 +101,5 @@ for file in files:
             )
     except Exception as e:
         f.writelines(file)
-        f.writelines(e.message)
-        f.writelines(e.args)
+        f.writelines(e)
         f.write("\n\n\n")
-

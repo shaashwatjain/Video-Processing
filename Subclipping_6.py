@@ -139,6 +139,12 @@ def calcInterval(arg1, arg2):
     return answerDict
 
 
+def convertSecToMin(timeSec):
+    MIN = timeSec // 60
+    SEC = timeSec % 60
+    return str(MIN) + ":" + str(SEC)
+
+
 def segmentVideo(mostOccuring, finalPluralTopics, videoname):
     mostOccurringTopic2 = ""
     maxDuration = 0
@@ -154,6 +160,8 @@ def segmentVideo(mostOccuring, finalPluralTopics, videoname):
     video = []
     debug = 0
 
+
+    file = open("outputs.txt", 'a')
     if mostOccuring != mostOccurringTopic2:
         mostOccuring = mostOccurringTopic2
         # print(
@@ -170,9 +178,11 @@ def segmentVideo(mostOccuring, finalPluralTopics, videoname):
         # else:
         #     print("Invalid option... Aborting")
         #     return 1
-    
+
     del finalPluralTopics[mostOccuring]
-    print(mostOccuring+":")
+    file.writelines(videoname)
+    file.writelines(mostOccuring+":")
+
 
     # try:
     #     if not os.path.exists("files_" + videoname + "/" + mostOccuring):
@@ -182,7 +192,7 @@ def segmentVideo(mostOccuring, finalPluralTopics, videoname):
     #     print("Error creating directory")
 
     for topic in finalPluralTopics.keys():
-        print(topic , end=" - ")
+        file.write(topic + " - ")
         for i in finalPluralTopics[topic]:
             startDuration = i[0]
             endDuration = i[1]
@@ -192,14 +202,16 @@ def segmentVideo(mostOccuring, finalPluralTopics, videoname):
                 video.append(
                     VideoFileClip(videoname+'.mp4').subclip(startDuration, endDuration)
                 )
-                print("("+str(startDuration)+", "+str(endDuration)+")", end="  ")
-        print("\n")
+                file.write("("+convertSecToMin(startDuration)+", "+convertSecToMin(endDuration) + ")  ")
+        file.write("\n")
         # print(video)
         if video and debug:
             finalClip = concatenate_videoclips(video)
             finalClip.write_videofile("files_" + videoname + "/"+ mostOccuring + "/" + topic + ".mp4")
             print("Written file :" + topic + "\n")
         video = []
+    file.writelines("\n\n")
+    file.close()
     return 0
 
 
