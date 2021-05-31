@@ -152,7 +152,7 @@ def segmentVideo(mostOccuring, finalPluralTopics, videoname):
             mostOccurringTopic2 = topic
 
     video = []
-    debug = 1
+    debug = 0
 
     if mostOccuring != mostOccurringTopic2:
         mostOccuring = mostOccurringTopic2
@@ -172,36 +172,33 @@ def segmentVideo(mostOccuring, finalPluralTopics, videoname):
         #     return 1
     
     del finalPluralTopics[mostOccuring]
+    print(mostOccuring+":")
 
-    if not debug:
-        try:
-            if not os.path.exists("files_" + videoname + "/" + mostOccuring):
-                os.makedirs("files_" + videoname + "/" + mostOccuring)
-                print("Created Directory")
-        except:
-            print("Error creating directory")
+    try:
+        if not os.path.exists("files_" + videoname + "/" + mostOccuring):
+            os.makedirs("files_" + videoname + "/" + mostOccuring)
+            print("Created Directory")
+    except:
+        print("Error creating directory")
 
-        for topic in finalPluralTopics.keys():
-            for i in finalPluralTopics[topic]:
-                startDuration = i[0]
-                endDuration = i[1]
-                if mostOccuring in topic:
-                    continue
-                if endDuration - startDuration > 10:
-                    video.append(
-                        VideoFileClip(videoname+'.mp4').subclip(startDuration, endDuration)
-                    )
-                    # print(startDuration, endDuration)
-            # print(video)
-            if video:
-                finalClip = concatenate_videoclips(video)
-                finalClip.write_videofile("files_" + videoname + "/"+ mostOccuring + "/" + topic + ".mp4")
-                print("Written file :" + topic + "\n")
-            video = []
-    else:
-        print(mostOccuring+":")
-        for topic in finalPluralTopics.keys():
-            print(topic)
+    for topic in finalPluralTopics.keys():
+        print(topic , end=" - ")
+        for i in finalPluralTopics[topic]:
+            startDuration = i[0]
+            endDuration = i[1]
+            if mostOccuring in topic:
+                continue
+            if endDuration - startDuration > 10:
+                video.append(
+                    VideoFileClip(videoname+'.mp4').subclip(startDuration, endDuration)
+                )
+                print("(",startDuration, endDuration,")", end=", ")
+        # print(video)
+        if video and debug:
+            finalClip = concatenate_videoclips(video)
+            finalClip.write_videofile("files_" + videoname + "/"+ mostOccuring + "/" + topic + ".mp4")
+            print("Written file :" + topic + "\n")
+        video = []
     return 0
 
 
