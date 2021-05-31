@@ -180,8 +180,9 @@ def segmentVideo(mostOccuring, finalPluralTopics, videoname):
         #     return 1
 
     del finalPluralTopics[mostOccuring]
-    file.writelines(videoname)
-    file.writelines(mostOccuring+":")
+
+    file.write(videoname + "\n")
+    file.write(mostOccuring+":" + "\n")
 
 
     # try:
@@ -210,7 +211,7 @@ def segmentVideo(mostOccuring, finalPluralTopics, videoname):
             finalClip.write_videofile("files_" + videoname + "/"+ mostOccuring + "/" + topic + ".mp4")
             print("Written file :" + topic + "\n")
         video = []
-    file.writelines("\n\n")
+    file.write("\n\n")
     file.close()
     return 0
 

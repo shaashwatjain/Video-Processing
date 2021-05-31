@@ -92,6 +92,8 @@ for file in files:
     counted_plu = dict()
     counted_plu_ocr = dict()
     f = open('error.txt','w')
+    f2 = open("outputs.txt","w")
+    f2.close()
     try:
         if file not in transcripts:
             runFull(file, counted_sing, counted_sing_ocr, counted_plu, counted_plu_ocr)
@@ -100,6 +102,6 @@ for file in files:
                 file, counted_sing, counted_sing_ocr, counted_plu, counted_plu_ocr
             )
     except Exception as e:
-        f.writelines(file)
-        f.writelines(e)
-        f.write("\n\n\n")
+        f.write(file + "\n")
+        f.write(e + "\n")
+        f.write("\n\n")
