@@ -152,7 +152,7 @@ def segmentVideo(mostOccuring, finalPluralTopics, videoname):
             mostOccurringTopic2 = topic
 
     video = []
-    debug = 0
+    debug = 1
 
     if mostOccuring != mostOccurringTopic2:
         print(
@@ -196,6 +196,7 @@ def segmentVideo(mostOccuring, finalPluralTopics, videoname):
                 finalClip = concatenate_videoclips(video)
                 finalClip.write_videofile("files_" + videoname + "/"+ mostOccuring + "/" + topic + ".mp4")
                 print("Written file :" + topic + "\n")
+            video = []
     else:
         print(mostOccuring+":")
         for topic in finalPluralTopics.keys():
