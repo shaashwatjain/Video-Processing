@@ -155,20 +155,21 @@ def segmentVideo(mostOccuring, finalPluralTopics, videoname):
     debug = 1
 
     if mostOccuring != mostOccurringTopic2:
-        print(
-            "Please choose your main topic(1/2):\n1. {}\n2. {}\n".format(
-                mostOccuring, mostOccurringTopic2
-            )
-        )
+        mostOccuring = mostOccurringTopic2
+        # print(
+        #     "Please choose your main topic(1/2):\n1. {}\n2. {}\n".format(
+        #         mostOccuring, mostOccurringTopic2
+        #     )
+        # )
 
-        num = int(input("Enter here:"))
-        if num == 1:
-            mostOccuring = mostOccuring
-        elif num == 2:
-            mostOccuring = mostOccurringTopic2
-        else:
-            print("Invalid option... Aborting")
-            return 1
+        # num = int(input("Enter here:"))
+        # if num == 1:
+        #     mostOccuring = mostOccuring
+        # elif num == 2:
+        #     mostOccuring = mostOccurringTopic2
+        # else:
+        #     print("Invalid option... Aborting")
+        #     return 1
     
     del finalPluralTopics[mostOccuring]
 
