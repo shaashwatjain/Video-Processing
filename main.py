@@ -103,5 +103,5 @@ for file in files:
             )
     except Exception as e:
         f.write(file + "\n")
-        f.write(e + "\n")
+        f.write(str(e) + "\n")
         f.write("\n\n")
