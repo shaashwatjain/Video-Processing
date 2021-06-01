@@ -76,6 +76,10 @@ for (folder, subfolder, file) in os.walk("./"):
             transcripts.append(f)
     break
 
+f = open('error.txt','w')
+f2 = open("outputs.txt","w")
+f2.close()
+
 for file in files:
     try:
         # creating a folder named data
@@ -91,9 +95,7 @@ for file in files:
     counted_sing_ocr = dict()
     counted_plu = dict()
     counted_plu_ocr = dict()
-    f = open('error.txt','w')
-    f2 = open("outputs.txt","w")
-    f2.close()
+
     try:
         if file not in transcripts:
             runFull(file, counted_sing, counted_sing_ocr, counted_plu, counted_plu_ocr)
@@ -105,3 +107,5 @@ for file in files:
         f.write(file + "\n")
         f.write(str(e) + "\n")
         f.write("\n\n")
+
+f.close()
