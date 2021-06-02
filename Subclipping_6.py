@@ -36,9 +36,14 @@ def preprocessing(listOfPlurWords, transcript):
 def singleTopicsFinding(listOfWords, transcript):
     temp_dict = defaultdict(list)
     for i in listOfWords:
+        tempList = []
         for j in transcript:
             if i in j:
-                temp_dict[i].append(j[0])
+                tempList.append(j[0])
+        if len(tempList) < 4:
+            listOfWords.remove(i)
+            continue
+        temp_dict[i] = tempList
     return temp_dict
 
 
@@ -48,6 +53,8 @@ def pluralTopicsFinding(listOfPlurWords, partialResultTopics):
         tempSet = set()
         for i in topic.split():
             tempSet.update(partialResultTopics[i])
+        if len(tempSet) < 4:
+            continue
         tempSet = sorted(tempSet)
         temp_dict[topic] = tempSet
     return temp_dict
@@ -71,11 +78,14 @@ def timeCalc(argument):
 
 def cleaningPluralTopics(secPluralTopics, secFirstOccr):
     # starting the plural topics from the firstOccr
+    tempDict = defaultdict(list)
     for i, j in secPluralTopics.items():
         mark = secFirstOccr[i][0]
         while j[0] < mark:
             j.pop(0)
-    return secPluralTopics
+        if len(j) > 3:
+            tempDict[i] = j
+    return tempDict
 
 
 def diffCalc(argument):
@@ -218,8 +228,8 @@ def segmentVideo(mostOccuring, finalPluralTopics, videoname):
 
 def subclipping(listOfSingWords, listOfPlurWords, mostOccuring, transcript, videoname):
     script = modifyTranscript(transcript)
-    topics, firstOccr = preprocessing(listOfPlurWords, transcript)
     singleTopics = singleTopicsFinding(listOfSingWords, script)
+    topics, firstOccr = preprocessing(listOfPlurWords, transcript)
     partialResultTopics = singleTopicsFinding(topics, script)
     pluralTopics = pluralTopicsFinding(listOfPlurWords, partialResultTopics)
 
